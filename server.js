@@ -5,6 +5,7 @@ const PORT = 3003;
 const mongoose = require("mongoose");
 const Movie = require("./models/movies")
 
+const routes = require("./controllers/movieController")
 
 app.use(express.json());
 
@@ -28,11 +29,15 @@ mongoose.connection.once("open", () => {
 });
 
 
-// Routes
-// Post, get, put, delete 
+
+
 const movieController = require("./controllers/movieController")
 app.use("/movieController", movieController);
 
+
+//=======================
+//ROUTES
+//=======================
 
 // app.get("/*", (req, res) => {
 //     res.redirect("/movieController");
@@ -47,7 +52,37 @@ app.post("/create", async (req, res) => {
     });
 });
 
+app.get('/findAll', (req, res) => {
+  Movie.find( (err, data) => {
+    if (err) {
+      res.status(400).json({error: error.message});
+    } else {
+      res.send(data);
+    }
+  });
+});
 
+app.get('/findOne/:movieName', (req, res) => {
+  const { movieName } = req.params;
+  Movie.findOne({movieName}, (err, data) => {
+    if (err) {
+      res.status(400).json({ error: error.message});
+    } else {
+      res.send(data);
+    }
+  });
+});
+
+app.delete("/delete/:movieName", async (req, res) => {
+  const { movieName } = req.params;
+  Movie.remove({movieName}, (err, data) => {
+    if (err) {
+      res.status(400).json({ error: error.message})
+    } else {
+      res.send(data);
+    }
+  });
+});
 
 
 // listening to port

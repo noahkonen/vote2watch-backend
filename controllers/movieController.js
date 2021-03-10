@@ -26,14 +26,90 @@ movie.get("/", (req, res) => {
 
 
 
+// exports.index = (req, res) => {
+//   Movie.find({}, (err, docs) => {
+//     if (!err) {
+//       res.json(200, {movies: docs });
+//     } else {
+//       res.json(500, {message: err});
+//     }
+//   });
+// }
 
 
+// exports.findById = (req, res) => {
+//   var id = req.params.id;
+//   Movie.findById(id, (err, doc) => {
+//     if (!err & doc) {
+//       res.json(200, doc);
+//     } else if(err) {
+//       res.json(500, {message: "Erro loading" +err});
+//     } else {
+//       res.json(404, {message: "Movie not found"});
+//     }
+//   });
+// }
 
+// exports.create = (req, res) => {
+//   var movieName = req.body.movieName;
+//   var votes = req.body.votes;
+//   var movieRoomID = req.body.movieRoomID;
+  
+//   var newMovie = new Movie();
 
+//   newMovie.movieName = movieName;
+//   newMovie.votes = votes;
+//   newMovie.movieRoomID = movieRoomID;
 
+//   newMovie.save( (err) => {
+//     if (!err) {
+//       res.json(201, {message: "Movie created with name" + newMovie.movieName});
+//     } else {
+//       res.json(500, {message: "Could not create. Error: " + err});
+//     }
+//   });
 
+// }
 
+// exports.update = (req, res) => {
+  
+//   var id = req.body.id; 
+//   var movieName = req.body.movieName;
+//   var votes = req.body.votes; 
 
+//   Movie.findById(id, (err, doc) => {
+//   if(!err && doc) {
+//     doc.name = movieName; 
+//     doc.votes = votes; 
+//     doc.save((err) => {
+//       if(!err) {
+//         res.json(200, {message: "Movie updated: " + workout_name});    
+//       } else {
+//         res.json(500, {message: "Could not update Movie. " + err});
+//         }  
+//       });
+//       } else if(!err) {
+//         res.json(404, { message: "Could not find Movie."});
+//       } else {
+//         res.json(500, { message: "Could not update Movie." + err});
+//     }
+//   }); 
+// }
+
+// exports.delete = (req, res) => {
+
+//   var id = req.body.id; 
+//   Movie.findById(id, (err, doc) => {
+//     if(!err && doc) {
+//       doc.remove();
+//       res.json(200, { message: "Movie removed."});
+//     } else if(!err) {
+//       res.json(404, { message: "Could not find Movie."});
+//     } else {
+//       res.json(403, {message: "Could not delete Movie. " + err });
+//     }
+//   });
+// }
 
 
 module.exports = movie;
