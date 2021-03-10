@@ -43,6 +43,7 @@ app.use("/movieController", movieController);
 //     res.redirect("/movieController");
 // });
 
+//post method route
 app.post("/create", async (req, res) => {
     Movie.create(req.body, (error, createdMovie) => {
       if (error) {
@@ -52,6 +53,7 @@ app.post("/create", async (req, res) => {
     });
 });
 
+//get all method route
 app.get('/findAll', (req, res) => {
   Movie.find( (err, data) => {
     if (err) {
@@ -62,6 +64,7 @@ app.get('/findAll', (req, res) => {
   });
 });
 
+//get one method route
 app.get('/findOne/:movieName', (req, res) => {
   const { movieName } = req.params;
   Movie.findOne({movieName}, (err, data) => {
@@ -73,17 +76,32 @@ app.get('/findOne/:movieName', (req, res) => {
   });
 });
 
+//delete method route
 app.delete("/delete/:movieName", async (req, res) => {
   const { movieName } = req.params;
   Movie.remove({movieName}, (err, data) => {
     if (err) {
-      res.status(400).json({ error: error.message})
+      res.status(400).json({ error: error.message});
     } else {
       res.send(data);
     }
   });
 });
 
+//patch (i believe this functions similar to put) method route
+app.patch("/update/:movieName", async (req, res) => {
+  try {
+    const movie = await Movie.findOne({movieName: req.params.movieName})
+
+    movie.votes += 1
+
+    await movie.save()
+    res.send(movie)
+  } catch {
+    res.status(404)
+    res.send({ error: "Post does not exist"});
+  }
+});
 
 // listening to port
 app.listen(PORT, () => {
