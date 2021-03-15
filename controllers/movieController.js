@@ -14,102 +14,52 @@ movie.post("/create", async (req, res) => {
     });
 });
 
-movie.get("/", (req, res) => {
-    Movie.find({}, (err, foundMovies) => {
-      if (err) {
-        res.status(400).json({ error: err.message });
-      }
-      res.status(200).json(foundMovies);
-    });
+// movie.get("/findAll", async (req, res) => {
+//   Movie.find( (err, data) => {
+//     if (err) {
+//       res.status(400).json({error: error.message});
+//     } else {
+//       res.send(data);
+//     }
+//   });
+// });
+
+movie.get('/findOne/:movieName', (req, res) => {
+  const { movieName } = req.params;
+  Movie.findOne({movieName}, (err, data) => {
+    if (err) {
+      res.status(400).json({ error: error.message});
+    } else {
+      res.send(data);
+    }
+  });
 });
 
+movie.delete("/delete/:movieName", (req, res) => {
+  const { movieName } = req.params;
+  Movie.remove({movieName}, (err, data) => {
+    if (err) {
+      res.status(400).json({ error: error.message});
+    } else {
+      res.send(data);
+    }
+  });
+});
 
+movie.patch("/update/:movieName", async (req, res) => {
+  try {
+    const movie = await Movie.findOne({movieName: req.params.movieName})
+    
+    //increments the votes by 1
+    movie.votes += 1
 
-
-// exports.index = (req, res) => {
-//   Movie.find({}, (err, docs) => {
-//     if (!err) {
-//       res.json(200, {movies: docs });
-//     } else {
-//       res.json(500, {message: err});
-//     }
-//   });
-// }
-
-
-// exports.findById = (req, res) => {
-//   var id = req.params.id;
-//   Movie.findById(id, (err, doc) => {
-//     if (!err & doc) {
-//       res.json(200, doc);
-//     } else if(err) {
-//       res.json(500, {message: "Erro loading" +err});
-//     } else {
-//       res.json(404, {message: "Movie not found"});
-//     }
-//   });
-// }
-
-// exports.create = (req, res) => {
-//   var movieName = req.body.movieName;
-//   var votes = req.body.votes;
-//   var movieRoomID = req.body.movieRoomID;
-  
-//   var newMovie = new Movie();
-
-//   newMovie.movieName = movieName;
-//   newMovie.votes = votes;
-//   newMovie.movieRoomID = movieRoomID;
-
-//   newMovie.save( (err) => {
-//     if (!err) {
-//       res.json(201, {message: "Movie created with name" + newMovie.movieName});
-//     } else {
-//       res.json(500, {message: "Could not create. Error: " + err});
-//     }
-//   });
-
-// }
-
-// exports.update = (req, res) => {
-  
-//   var id = req.body.id; 
-//   var movieName = req.body.movieName;
-//   var votes = req.body.votes; 
-
-//   Movie.findById(id, (err, doc) => {
-//   if(!err && doc) {
-//     doc.name = movieName; 
-//     doc.votes = votes; 
-//     doc.save((err) => {
-//       if(!err) {
-//         res.json(200, {message: "Movie updated: " + workout_name});    
-//       } else {
-//         res.json(500, {message: "Could not update Movie. " + err});
-//         }  
-//       });
-//       } else if(!err) {
-//         res.json(404, { message: "Could not find Movie."});
-//       } else {
-//         res.json(500, { message: "Could not update Movie." + err});
-//     }
-//   }); 
-// }
-
-// exports.delete = (req, res) => {
-
-//   var id = req.body.id; 
-//   Movie.findById(id, (err, doc) => {
-//     if(!err && doc) {
-//       doc.remove();
-//       res.json(200, { message: "Movie removed."});
-//     } else if(!err) {
-//       res.json(404, { message: "Could not find Movie."});
-//     } else {
-//       res.json(403, {message: "Could not delete Movie. " + err });
-//     }
-//   });
-// }
+    await movie.save()
+    res.send(movie)
+  } catch {
+    res.status(404).json({ error: error.message});
+    res.send({ error: "Post does not exist"});
+  }
+});
 
 
 module.exports = movie;
