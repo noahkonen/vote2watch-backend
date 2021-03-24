@@ -5,24 +5,59 @@ const movie = express.Router();
 const Movie = require("../models/movies");
 
 
-movie.post("/create", async (req, res) => {
+movie.post("/create", (req, res) => {
     Movie.create(req.body, (error, createdMovie) => {
       if (error) {
         res.status(400).json({ error: error.message });
       }
-      res.status(200).send(createdMovie); //  .json() will send proper headers in response so client knows it's json coming back
+      res.status(200).send(createdMovie);
+      console.log(createdMovie);//  .json() will send proper headers in response so client knows it's json coming back
     });
+    
+    
+    
+    // Validate request
+   
+    // if (!req.body.title) {
+    //   res.status(400).send({ message: "Content can not be empty!" });
+    //   return;
+    // }
+  
+    // // Create a Tutorial
+    // const newMovie = new Movie({
+    //   id: req.body.id,
+    //   movieName: req.body.movieName,
+    //   votes: req.body.votes,
+    //   movieRoomID: req.body.movieRoomID
+    // });
+  
+    // // Save Tutorial in the database
+    // newMovie
+    //   .save(newMovie)
+    //   .then(data => {
+    //     res.send(data);
+    //   })
+    //   .catch(err => {
+    //     res.status(500).send({
+    //       message:
+    //         err.message || "Some error occurred while creating the Movie."
+    //     });
+    //   });
+
+
+
 });
 
-// movie.get("/findAll", async (req, res) => {
-//   Movie.find( (err, data) => {
-//     if (err) {
-//       res.status(400).json({error: error.message});
-//     } else {
-//       res.send(data);
-//     }
-//   });
-// });
+movie.get("/findAll", async (req, res) => {
+  Movie.find().then(data => {
+    res.send(data);
+  })
+  .catch(err => {
+    res.status(400).send({
+      message: err.message || "Error Occured"
+    });
+  });
+});
 
 movie.get('/findOne/:movieName', (req, res) => {
   const { movieName } = req.params;
@@ -60,6 +95,7 @@ movie.patch("/update/:movieName", async (req, res) => {
     res.send({ error: "Post does not exist"});
   }
 });
+
 
 
 module.exports = movie;
