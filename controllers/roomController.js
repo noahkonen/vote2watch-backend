@@ -52,7 +52,7 @@ room.patch("/update/:name", async (req, res) => {
   try {
     const room = await Room.findOne({movieName: req.params.movieName})
     
-    //increments the votes by 1
+    //increments the round by 1
     room.round += 1
 
     await room.save()
