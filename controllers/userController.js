@@ -8,6 +8,7 @@ const cors = require("cors");
 
 var whitelist = ['http://localhost:3000/createroompage']
 
+//cors options config
 var corsOptions = {
   origin: 'http://localhost:3000'
   // function (origin, callback) {
@@ -19,6 +20,7 @@ var corsOptions = {
   // }
 };
 
+//user post method
 user.post("/create", cors(corsOptions), async (req, res) => {
     User.create(req.body, (error, createdUser) => {
       if (error) {
@@ -28,6 +30,7 @@ user.post("/create", cors(corsOptions), async (req, res) => {
     });
 });
 
+//get array of all the users
 user.get("/findAll", cors(corsOptions), async (req, res) => {
   User.find().then(data => {
     res.send(data);
@@ -39,7 +42,7 @@ user.get("/findAll", cors(corsOptions), async (req, res) => {
   });
 });
 
-
+//find one user by id
 user.get('/findOne/:id', cors(corsOptions), (req, res) => {
   User.findById(req.params.id, (err, data) => {
     if (err) {
@@ -51,7 +54,7 @@ user.get('/findOne/:id', cors(corsOptions), (req, res) => {
   });
 });
 
-
+//delete one user by id
 user.delete("/delete/:id", cors(corsOptions), (req, res) => {
   User.findByIdAndRemove(req.params.id, (err, data) => {
     if (err) {
@@ -62,6 +65,7 @@ user.delete("/delete/:id", cors(corsOptions), (req, res) => {
   });
 });
 
+//deletes all users
 user.delete("/deleteAll", cors(corsOptions), (req, res) => {
   User.deleteMany({}, (err, data) => {
     if (err) {
@@ -72,6 +76,58 @@ user.delete("/deleteAll", cors(corsOptions), (req, res) => {
   });
 });
 
+//updates suggestion, takes two URL params
+user.put("/updateSuggestion/:id/:suggestion", cors(corsOptions), async (req, res) => {
+    User.findByIdAndUpdate(req.params.id, { suggestion: req.params.suggestion }, (err, p) => {
+        if (!p) {
+            return next(new Error('DNE'));
+        } else {
+            p.save((err) => {
+                if (err) {
+                  res.status(400).json({ error: error.message});
+                } else {
+                    res.send(p);
+                }
+            });
+        }
+    })
+});
+
+//udpates the room, takes 2 URL params
+user.put("/updateRoom/:id/:room", cors(corsOptions), async (req, res) => {
+    User.findByIdAndUpdate(req.params.id, { room: req.params.room }, (err, p) => {
+        if (!p) {
+            return next(new Error('DNE'));
+        } else {
+            p.save((err) => {
+                if (err) {
+                  res.status(400).json({ error: error.message});
+                } else {
+                  res.send(p);
+                }
+            });
+        }
+    })
+});
+
+//update the name, takes 2 URL params
+user.put("/updateName/:id/:name", cors(corsOptions), async (req, res) => {
+    User.findByIdAndUpdate(req.params.id, { name: req.params.name }, (err, p) => {
+        if (!p) {
+            return next(new Error('DNE'));
+        } else {
+            p.save((err) => {
+                if (err) {
+                  res.status(400).json({ error: error.message});
+                } else {
+                  res.send(p);
+                }
+            });
+        }
+    })
+});
+
+//update the votes by id, decrements it by 1
 user.put("/updateVotes/:id", cors(corsOptions), async (req, res) => {
   User.findById(req.params.id, (err, p) => {
       if (!p) {
@@ -91,6 +147,7 @@ user.put("/updateVotes/:id", cors(corsOptions), async (req, res) => {
   });
 });
 
+//updates the vetos by id, decrements it by 1
 user.put("/updateVetos/:id", cors(corsOptions), async (req, res) => {
     User.findById(req.params.id, (err, p) => {
         if (!p) {

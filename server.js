@@ -7,15 +7,18 @@ const Movie = require("./models/movies");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
+//config cors option
 var corsOptions = {
   origin: "http://localhost:3000",
   optionsSuccessStatus: 200
 };
 
+//importing all of the controllers
 const movieRoutes = require("./controllers/movieController");
 const roomRoutes = require("./controllers/roomController");
 const userRoutes = require("./controllers/userController");
 
+//mongo URI 
 const mongodbURI = "mongodb+srv://NateHockman:vote2watch@testclustertodos.gt42r.mongodb.net/testClusterTodos?retryWrites=true&w=majority"
 
 
@@ -36,6 +39,7 @@ mongoose.connect(mongodbURI, { useNewUrlParser: true }).then(() => {
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true}));
 
+  //tell the app to use all of the routes and specify the paths
   app.use("/api/movies", movieRoutes)
   app.use("/api/rooms", roomRoutes)
   app.use("/api/users", userRoutes)

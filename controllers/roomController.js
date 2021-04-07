@@ -19,6 +19,7 @@ var corsOptions = {
   // }
 };
 
+//create a new room
 room.post("/create", cors(corsOptions), async (req, res) => {
     Room.create(req.body, (error, createdRoom) => {
       if (error) {
@@ -28,6 +29,7 @@ room.post("/create", cors(corsOptions), async (req, res) => {
     });
 });
 
+//get all rooms
 room.get("/findAll", cors(corsOptions), async (req, res) => {
   Room.find().then(data => {
     res.send(data);
@@ -39,7 +41,7 @@ room.get("/findAll", cors(corsOptions), async (req, res) => {
   });
 });
 
-
+//find one room by name
 room.get('/findOne/:name', cors(corsOptions), (req, res) => {
   const { name } = req.params;
   console.log("Find one request found for: " + name)
@@ -53,20 +55,7 @@ room.get('/findOne/:name', cors(corsOptions), (req, res) => {
   });
 });
 
-room.get('/findRoomsByRoomID/:roomID', cors(corsOptions), (req, res) => {
-  const { roomID } = req.params;
-  console.log("Find many for: " + roomID)
-  Room.find({ name: roomID }, (err, data) => {
-    if (err) {
-      res.status(400).json({ error: error.message});
-    } else {
-      console.log(data)
-      res.send(data)
-    }
-  });
-});
-
-
+//deletes one room by name
 room.delete("/delete/:name", cors(corsOptions), (req, res) => {
   const { name } = req.params;
   Room.remove({name}, (err, data) => {
@@ -78,6 +67,7 @@ room.delete("/delete/:name", cors(corsOptions), (req, res) => {
   });
 });
 
+//deletes all rooms
 room.delete("/deleteAll", cors(corsOptions), (req, res) => {
   console.log("Delete All Called")
   Room.deleteMany({}, (err, data) => {
@@ -89,7 +79,8 @@ room.delete("/deleteAll", cors(corsOptions), (req, res) => {
   });
 });
 
-room.put("/update/:name", cors(corsOptions), async (req, res) => {
+//updates the room round, increments it by 1
+room.put("/updateRound/:name", cors(corsOptions), async (req, res) => {
   Room.findOne({name: req.params.name}, (err, p) => {
     if (!p) {
         return next(new Error('DNE'));
