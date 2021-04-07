@@ -89,19 +89,23 @@ room.delete("/deleteAll", cors(corsOptions), (req, res) => {
   });
 });
 
-room.patch("/update/:name", cors(corsOptions), async (req, res) => {
-  try {
-    const room = await Room.findOne({movieName: req.params.movieName})
-    
-    //increments the round by 1
-    room.round += 1
+room.put("/update/:name", cors(corsOptions), async (req, res) => {
+  Room.findOne({name: req.params.name}, (err, p) => {
+    if (!p) {
+        return next(new Error('DNE'));
+    } else {
+        p.round = p.round + 1
 
-    await room.save()
-    res.send(room)
-  } catch {
-    res.status(404).json({ error: error.message});
-    res.send({ error: "Room does not exist"});
-  }
+        p.save((err) => {
+            if (err) {
+              res.status(400).json({ error: error.message});
+            } else {
+              res.send(p);
+            }
+        });
+    }
+
+});
 });
 
 
