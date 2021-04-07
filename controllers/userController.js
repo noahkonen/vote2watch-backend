@@ -77,8 +77,8 @@ user.delete("/deleteAll", cors(corsOptions), (req, res) => {
 });
 
 //updates suggestion, takes two URL params
-user.put("/updateSuggestion/:id/:suggestion", cors(corsOptions), async (req, res) => {
-    User.findByIdAndUpdate(req.params.id, { suggestion: req.params.suggestion }, (err, p) => {
+user.put("/updateSuggestion/:id", cors(corsOptions), async (req, res) => {
+    User.findByIdAndUpdate(req.params.id, { suggestion: req.body.suggestion }, (err, p) => {
         if (!p) {
             return next(new Error('DNE'));
         } else {
@@ -94,8 +94,8 @@ user.put("/updateSuggestion/:id/:suggestion", cors(corsOptions), async (req, res
 });
 
 //udpates the room, takes 2 URL params
-user.put("/updateRoom/:id/:room", cors(corsOptions), async (req, res) => {
-    User.findByIdAndUpdate(req.params.id, { room: req.params.room }, (err, p) => {
+user.put("/updateRoom/:id/", cors(corsOptions), async (req, res) => {
+    User.findByIdAndUpdate(req.params.id, { room: req.body.room }, (err, p) => {
         if (!p) {
             return next(new Error('DNE'));
         } else {
@@ -111,8 +111,8 @@ user.put("/updateRoom/:id/:room", cors(corsOptions), async (req, res) => {
 });
 
 //update the name, takes 2 URL params
-user.put("/updateName/:id/:name", cors(corsOptions), async (req, res) => {
-    User.findByIdAndUpdate(req.params.id, { name: req.params.name }, (err, p) => {
+user.put("/updateName/:id", cors(corsOptions), async (req, res) => {
+    User.findByIdAndUpdate(req.params.id, { name: req.body.name }, (err, p) => {
         if (!p) {
             return next(new Error('DNE'));
         } else {
