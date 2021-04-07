@@ -4,8 +4,22 @@ const room = express.Router();
 
 const Room = require("../models/rooms");
 
+const cors = require("cors");
 
-room.post("/create", async (req, res) => {
+var whitelist = ['http://localhost:3000/createroompage']
+
+var corsOptions = {
+  origin: 'http://localhost:3000'
+  // function (origin, callback) {
+  //   if (whitelist.indexOf(origin) !== -1) {
+  //     callback(null, true)
+  //   } else {
+  //     callback(new Error('Not allowed by CORS'))
+  //   }
+  // }
+};
+
+room.post("/create", cors(corsOptions), async (req, res) => {
     Room.create(req.body, (error, createdRoom) => {
       if (error) {
         res.status(400).json({ error: error.message });
@@ -14,7 +28,7 @@ room.post("/create", async (req, res) => {
     });
 });
 
-room.get("/findAll", async (req, res) => {
+room.get("/findAll", cors(corsOptions), async (req, res) => {
   Room.find().then(data => {
     res.send(data);
   })
@@ -26,18 +40,34 @@ room.get("/findAll", async (req, res) => {
 });
 
 
-room.get('/findOne/:name', (req, res) => {
+room.get('/findOne/:name', cors(corsOptions), (req, res) => {
   const { name } = req.params;
+  console.log("Find one request found for: " + name)
   Room.findOne({name}, (err, data) => {
     if (err) {
       res.status(400).json({ error: error.message});
     } else {
+      console.log(data);
       res.send(data);
     }
   });
 });
 
-room.delete("/delete/:name", (req, res) => {
+room.get('/findRoomsByRoomID/:roomID', cors(corsOptions), (req, res) => {
+  const { roomID } = req.params;
+  console.log("Find many for: " + roomID)
+  Room.find({ name: roomID }, (err, data) => {
+    if (err) {
+      res.status(400).json({ error: error.message});
+    } else {
+      console.log(data)
+      res.send(data)
+    }
+  });
+});
+
+
+room.delete("/delete/:name", cors(corsOptions), (req, res) => {
   const { name } = req.params;
   Room.remove({name}, (err, data) => {
     if (err) {
@@ -48,7 +78,18 @@ room.delete("/delete/:name", (req, res) => {
   });
 });
 
-room.patch("/update/:name", async (req, res) => {
+room.delete("/deleteAll", cors(corsOptions), (req, res) => {
+  console.log("Delete All Called")
+  Room.deleteMany({}, (err, data) => {
+    if (err) {
+      res.status(400).json({ error: error.message});
+    } else {
+      res.send(data);
+    }
+  });
+});
+
+room.patch("/update/:name", cors(corsOptions), async (req, res) => {
   try {
     const room = await Room.findOne({movieName: req.params.movieName})
     

@@ -4,6 +4,21 @@ const movie = express.Router();
 
 const Movie = require("../models/movies");
 
+const cors = require("cors");
+
+var whitelist = ['http://localhost:3000/createroompage']
+
+var corsOptions = {
+  origin: 'http://localhost:3000'
+  // function (origin, callback) {
+  //   if (whitelist.indexOf(origin) !== -1) {
+  //     callback(null, true)
+  //   } else {
+  //     callback(new Error('Not allowed by CORS'))
+  //   }
+  // }
+};
+
 
 movie.post("/create", (req, res) => {
     Movie.create(req.body, (error, createdMovie) => {
@@ -66,6 +81,19 @@ movie.get('/findOne/:movieName', (req, res) => {
       res.status(400).json({ error: error.message});
     } else {
       res.send(data);
+    }
+  });
+});
+
+movie.get('/findMoviesByRoomID/:id', cors(corsOptions), (req, res) => {
+  const { id } = req.params;
+  console.log("Find many for: " + id)
+  Movie.find({ movieRoomID: id }, (err, data) => {
+    if (err) {
+      res.status(400).json({ error: error.message});
+    } else {
+      console.log(data)
+      res.send(data)
     }
   });
 });
