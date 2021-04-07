@@ -40,10 +40,8 @@ user.get("/findAll", cors(corsOptions), async (req, res) => {
 });
 
 
-user.get('/findOne/:name', cors(corsOptions), (req, res) => {
-  const { name } = req.params;
-  console.log("Find one request found for: " + name)
-  User.findOne({name}, (err, data) => {
+user.get('/findOne/:id', cors(corsOptions), (req, res) => {
+  User.findById(req.params.id, (err, data) => {
     if (err) {
       res.status(400).json({ error: error.message});
     } else {
@@ -54,9 +52,8 @@ user.get('/findOne/:name', cors(corsOptions), (req, res) => {
 });
 
 
-user.delete("/delete/:name", cors(corsOptions), (req, res) => {
-  const { name } = req.params;
-  User.remove({name}, (err, data) => {
+user.delete("/delete/:id", cors(corsOptions), (req, res) => {
+  User.findByIdAndRemove(req.params.id, (err, data) => {
     if (err) {
       res.status(400).json({ error: error.message});
     } else {
@@ -66,7 +63,6 @@ user.delete("/delete/:name", cors(corsOptions), (req, res) => {
 });
 
 user.delete("/deleteAll", cors(corsOptions), (req, res) => {
-  console.log("Delete All Called")
   User.deleteMany({}, (err, data) => {
     if (err) {
       res.status(400).json({ error: error.message});
@@ -76,38 +72,42 @@ user.delete("/deleteAll", cors(corsOptions), (req, res) => {
   });
 });
 
-user.patch("/updateVotes/:id", cors(corsOptions), async (req, res) => {
-  try {
-    //Put what we want to update here if there needs to be anything 
-    //updated
-    const id = req.params
+user.put("/updateVotes/:id", cors(corsOptions), async (req, res) => {
+  User.findById(req.params.id, (err, p) => {
+      if (!p) {
+          return next(new Error('DNE'));
+      } else {
+          p.numVotes = p.numVotes - 1
 
-    const user = await User.findById({_id: id })
+          p.save((err) => {
+              if (err) {
+                res.status(400).json({ error: error.message});
+              } else {
+                res.send(p);
+              }
+          });
+      }
 
-    user.numVotes -= 1
-
-    await user.save()
-    res.send(user)
-  } catch {
-    res.status(404).json({ error: error.message });
-    res.send({ error: "Room does not exist"});
-  }
+  });
 });
 
-user.patch("/updateVetos/:id", cors(corsOptions), async (req, res) => {
-    try {
-      //Put what we want to update here if there needs to be anything 
-      //updated
-      const user = await User.findOne({_id: req.params._id})
-
-      user.numVetos -= 1
-
-      await user.save()
-      res.send(user)
-    } catch {
-      res.status(404).json({ error: error.message});
-      res.send({ error: "Room does not exist"});
-    }
+user.put("/updateVetos/:id", cors(corsOptions), async (req, res) => {
+    User.findById(req.params.id, (err, p) => {
+        if (!p) {
+            return next(new Error('DNE'));
+        } else {
+            p.numVetos = p.numVetos - 1
+  
+            p.save((err) => {
+                if (err) {
+                  res.status(400).json({ error: error.message});
+                } else {
+                  res.send(p);
+                }
+            });
+        }
+  
+    });
   });
 
 
