@@ -94,7 +94,7 @@ user.put("/updateSuggestion/:id", cors(corsOptions), async (req, res) => {
 });
 
 //udpates the room, takes 2 URL params
-user.put("/updateRoom/:id/", cors(corsOptions), async (req, res) => {
+user.put("/updateRoom/:id", cors(corsOptions), async (req, res) => {
     User.findByIdAndUpdate(req.params.id, { room: req.body.room }, (err, p) => {
         if (!p) {
             return next(new Error('DNE'));

@@ -54,7 +54,7 @@ movie.get('/findOne/:movieName', cors(corsOptions), (req, res) => {
   });
 });
 
-//find all movies who's room id's match i.e: They are in the same game room
+//find all movies who's room movieRoom id's match i.e: They are in the same game room
 movie.get('/findMoviesByRoomID/:id', cors(corsOptions), (req, res) => {
   const { id } = req.params;
   console.log("Find many for: " + id)
@@ -88,6 +88,22 @@ movie.put("/updateVotes/:movieName", cors(corsOptions), async (req, res) => {
     } else {
         p.votes = p.votes + 1
 
+        p.save((err) => {
+            if (err) {
+              res.status(400).json({ error: error.message});
+            } else {
+              res.send(p);
+            }
+        });
+    }
+  });
+});
+
+movie.put("/updateRoomID/:id", cors(corsOptions), async (req, res) => {
+  await Movie.findByIdAndUpdate(req.params.id, { movieRoomID: req.body.movieRoomID }, (err, p) => {
+    if (!p) {
+        return next(new Error('DNE'));
+    } else {
         p.save((err) => {
             if (err) {
               res.status(400).json({ error: error.message});
