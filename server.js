@@ -17,6 +17,7 @@ var corsOptions = {
 const movieRoutes = require("./controllers/movieController");
 const roomRoutes = require("./controllers/roomController");
 const userRoutes = require("./controllers/userController");
+const sugggestionRoutes = require("./controllers/suggestionController")
 
 //mongo URI 
 const mongodbURI = "mongodb+srv://NateHockman:vote2watch@testclustertodos.gt42r.mongodb.net/testClusterTodos?retryWrites=true&w=majority"
@@ -43,6 +44,7 @@ mongoose.connect(mongodbURI, { useNewUrlParser: true }).then(() => {
   app.use("/api/movies", movieRoutes)
   app.use("/api/rooms", roomRoutes)
   app.use("/api/users", userRoutes)
+  app.use('/api/suggestions', sugggestionRoutes)
 
   // mongoose.connection.once("open", () => {
   //   console.log("connected to mongoose...");

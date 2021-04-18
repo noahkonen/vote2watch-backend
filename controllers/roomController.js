@@ -99,5 +99,46 @@ room.put("/updateRound/:name", cors(corsOptions), async (req, res) => {
 });
 });
 
+//updates the suggestion list id of a movie 
+room.put("/addSuggestion/:id", cors(corsOptions), async (req, res) => {
+  Room.findById(req.params.id, (err, p) => {
+    if (!p) {
+        return next(new Error('DNE'));
+    } else {
+        p.movieList.push(req.body)
+
+        p.save((err) => {
+            if (err) {
+              res.status(400).json({ error: error.message});
+            } else {
+              res.send(p);
+            }
+        });
+    }
+
+});
+});
+
+room.get("/findSuggestion/:id", cors(corsOptions), async (req, res) => {
+  Room.findOne({"movieList.id": req.params.id}, (err, p) => {
+    if (!p) {
+        return next(new Error('DNE'));
+    } else {
+        //p.movieList.push(req.body)
+        
+        // p.save((err) => {
+        //     if (err) {
+        //       res.status(400).json({ error: error.message});
+        //     } else {
+        //       res.send(p);
+        //     }
+        // });
+
+        res.send(p)
+    }
+
+});
+});
+
 
 module.exports = room;
