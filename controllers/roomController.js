@@ -41,6 +41,16 @@ room.get("/findAll", cors(corsOptions), async (req, res) => {
   });
 });
 
+//finds all suggestions within a room
+//returns an array of movieSuggestion Schemas
+room.get("/findAllSuggestions/:id", cors(corsOptions), async (req, res) => {
+  Room.findById(req.params.id, (err, data) => {
+    res.send(data.movieList)
+ 
+  });
+});
+
+
 //find one room by name
 room.get('/findOne/:name', cors(corsOptions), (req, res) => {
   const { name } = req.params;
@@ -99,7 +109,7 @@ room.put("/updateRound/:name", cors(corsOptions), async (req, res) => {
 });
 });
 
-//updates the suggestion list id of a movie 
+//adds a new suggestion to the movieList array of the room
 room.put("/addSuggestion/:id", cors(corsOptions), async (req, res) => {
   Room.findById(req.params.id, (err, p) => {
     if (!p) {
@@ -119,22 +129,22 @@ room.put("/addSuggestion/:id", cors(corsOptions), async (req, res) => {
 });
 });
 
+//needs to return one suggestion
 room.get("/findSuggestion/:id", cors(corsOptions), async (req, res) => {
-  Room.findOne({"movieList.id": req.params.id}, (err, p) => {
-    if (!p) {
+  Room.findById(req.params.id, (err, data) => {
+    if (!data) {
         return next(new Error('DNE'));
     } else {
-        //p.movieList.push(req.body)
-        
-        // p.save((err) => {
-        //     if (err) {
-        //       res.status(400).json({ error: error.message});
-        //     } else {
-        //       res.send(p);
-        //     }
-        // });
+      const suggestion = "Why do you hate us god"
+      const count = 0
 
-        res.send(p)
+      while (data.movieList[count].name != suggestion) {
+        count ++
+      }
+
+
+        console.log(data.movieList[count])
+        res.send(data.movieList[count])
     }
 
 });
