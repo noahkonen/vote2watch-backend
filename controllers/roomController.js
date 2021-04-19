@@ -45,17 +45,18 @@ room.get("/findAll", cors(corsOptions), async (req, res) => {
 //returns an array of movieSuggestion Schemas
 room.get("/findAllSuggestions/:id", cors(corsOptions), async (req, res) => {
   Room.findById(req.params.id, (err, data) => {
-    res.send(data.movieList)
- 
+    if (err) {
+      console.log(err)
+    } else {
+      res.send(data.movieList)
+    }
   });
 });
 
 
 //find one room by name
-room.get('/findOne/:name', cors(corsOptions), (req, res) => {
-  const { name } = req.params;
-  console.log("Find one request found for: " + name)
-  Room.findOne({name}, (err, data) => {
+room.get('/findOne/:id', cors(corsOptions), (req, res) => {
+  Room.findById(req.params.id, (err, data) => {
     if (err) {
       res.status(400).json({ error: error.message});
     } else {
@@ -111,17 +112,17 @@ room.put("/updateRound/:name", cors(corsOptions), async (req, res) => {
 
 //adds a new suggestion to the movieList array of the room
 room.put("/addSuggestion/:id", cors(corsOptions), async (req, res) => {
-  Room.findById(req.params.id, (err, p) => {
-    if (!p) {
-        return next(new Error('DNE'));
+  Room.findById(req.params.id, (err, data) => {
+    if (err) {
+        console.log(err)
     } else {
-        p.movieList.push(req.body)
+        data.movieList.push(req.body)
 
-        p.save((err) => {
+        data.save((err) => {
             if (err) {
               res.status(400).json({ error: error.message});
             } else {
-              res.send(p);
+              res.send(data);
             }
         });
     }
@@ -129,26 +130,29 @@ room.put("/addSuggestion/:id", cors(corsOptions), async (req, res) => {
 });
 });
 
-//needs to return one suggestion
-room.get("/findSuggestion/:id", cors(corsOptions), async (req, res) => {
-  Room.findById(req.params.id, (err, data) => {
-    if (!data) {
-        return next(new Error('DNE'));
-    } else {
-      const suggestion = "Why do you hate us god"
-      const count = 0
+// //needs to return one suggestion
+// room.get("/findSuggestion/:id", cors(corsOptions), async (req, res) => {
+//   Room.findById(req.params.id, (err, data) => {
+//     if (err) {
+//         console.log("This is the err", err)
+//     } else {
+//       console.log(req.params.id)
+//       console.log(data)
+//       res.send(data)
+//       // const suggestion = "Why do you hate us god"
+//       // const count = 0
 
-      while (data.movieList[count].name != suggestion) {
-        count ++
-      }
+//       // while (data.movieList[count].name != suggestion) {
+//       //   count ++
+//       // }
 
 
-        console.log(data.movieList[count])
-        res.send(data.movieList[count])
-    }
+//       //   console.log(data.movieList[count])
+//       //   res.send(data.movieList[count])
+//     }
 
-});
-});
+// });
+// });
 
 
 module.exports = room;

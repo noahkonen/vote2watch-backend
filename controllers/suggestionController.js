@@ -44,8 +44,7 @@ suggestion.get("/findAll", cors(corsOptions), async (req, res) => {
 
 //find a movie by its name
 suggestion.get('/findOne/:id', cors(corsOptions), (req, res) => {
-  const { id } = req.params;
-  Suggestion.findOne({id}, (err, data) => {
+  Suggestion.findById(req.params.id, (err, data) => {
     if (err) {
       res.status(400).json({ error: error.message});
     } else {
@@ -54,24 +53,9 @@ suggestion.get('/findOne/:id', cors(corsOptions), (req, res) => {
   });
 });
 
-//find all movies who's room movieRoom id's match i.e: They are in the same game room
-suggestion.get('/findMoviesByRoomID/:id', cors(corsOptions), (req, res) => {
-  const { id } = req.params;
-  console.log("Find many for: " + id)
-  Suggestion.find({ movieRoomID: id }, (err, data) => {
-    if (err) {
-      res.status(400).json({ error: error.message});
-    } else {
-      console.log(data)
-      res.send(data)
-    }
-  });
-});
-
 //deletes a movie by its name
-suggestion.delete("/delete/:movieName", cors(corsOptions), (req, res) => {
-  const { movieName } = req.params;
-  Suggestion.remove({movieName}, (err, data) => {
+suggestion.delete("/delete/:id", cors(corsOptions), (req, res) => {;
+  Suggestion.remove(req.params.id, (err, data) => {
     if (err) {
       res.status(400).json({ error: error.message});
     } else {
@@ -93,41 +77,45 @@ suggestion.delete("/deleteAll", cors(corsOptions), (req, res) => {
   });
 
 //updates the movie votes, increments it by 1
+//needs to return one suggestion
 suggestion.put("/updateVotes/:id", cors(corsOptions), async (req, res) => {
-    Suggestion.findOne(req.params.id, (err, p) => {
-    if (!p) {
-        return next(new Error('DNE'));
+    Suggestion.findById(req.params.id, (err, data) => {
+    if (err) {
+        console.log(err)
     } else {
-        p.votes = p.votes + 1
+        data.votes = data.votes + 1
 
-        p.save((err) => {
+        data.save((err) => {
             if (err) {
               res.status(400).json({ error: error.message});
             } else {
-              res.send(p);
+              res.send(data);
             }
         });
     }
   });
 });
+  
 
 //updates the movie votes, increments it by 1
-suggestion.put("/updateVetos/:movieName", cors(corsOptions), async (req, res) => {
-    Suggestion.findOne({name: req.params.name}, (err, p) => {
-    if (!p) {
-        return next(new Error('DNE'));
+suggestion.put("/updateVetos/:id", cors(corsOptions), async (req, res) => {
+    Suggestion.findById(req.params.id, (err, data) => {
+    if (err) {
+        console.log(err)
     } else {
-        p.vetos = p.vetos + 1
+        data.vetos = data.vetos + 1
 
-        p.save((err) => {
+        data.save((err) => {
             if (err) {
               res.status(400).json({ error: error.message});
             } else {
-              res.send(p);
+              res.send(data);
             }
         });
     }
   });
 });
+
+
 
 module.exports = suggestion;

@@ -44,7 +44,7 @@ mongoose.connect(mongodbURI, { useNewUrlParser: true }).then(() => {
   app.use("/api/movies", movieRoutes)
   app.use("/api/rooms", roomRoutes)
   app.use("/api/users", userRoutes)
-  app.use('/api/suggestions', sugggestionRoutes)
+  app.use("/api/suggestions", sugggestionRoutes)
 
   // mongoose.connection.once("open", () => {
   //   console.log("connected to mongoose...");
