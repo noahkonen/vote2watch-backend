@@ -112,22 +112,15 @@ room.put("/updateRound/:name", cors(corsOptions), async (req, res) => {
 
 //adds a new suggestion to the movieList array of the room
 room.put("/addSuggestion/:id", cors(corsOptions), async (req, res) => {
-  Room.findById(req.params.id, (err, data) => {
+  const sugg = req.body.suggestion
+  console.log(sugg)
+  Room.updateOne({_id: req.params.id}, {$push: { movieList: sugg}}, (err, data) => {
     if (err) {
         console.log(err)
     } else {
-        data.movieList.push(req.body)
-
-        data.save((err) => {
-            if (err) {
-              res.status(400).json({ error: error.message});
-            } else {
-              res.send(data);
-            }
-        });
+      res.send(data);
     }
-
-});
+  });
 });
 
 // //needs to return one suggestion
