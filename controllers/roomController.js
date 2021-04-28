@@ -53,6 +53,16 @@ room.get("/findAllSuggestions/:id", cors(corsOptions), async (req, res) => {
   });
 });
 
+room.get('/findOneByCode/:name', cors(corsOptions), (req, res) => {
+  Room.findOne({name: req.params.name}, (err, data) => {
+    if (err) {
+      res.status(400).json({ error: error.message});
+    } else {
+      console.log(data);
+      res.send(data);
+    }
+  });
+});
 
 //find one room by name
 room.get('/findOne/:id', cors(corsOptions), (req, res) => {
@@ -65,6 +75,8 @@ room.get('/findOne/:id', cors(corsOptions), (req, res) => {
     }
   });
 });
+
+
 
 //deletes one room by name
 room.delete("/delete/:name", cors(corsOptions), (req, res) => {
